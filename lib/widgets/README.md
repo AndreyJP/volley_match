@@ -1,0 +1,1 @@
+Widgets folder: player_card.dart, team_card.dart, match_card.dart — optional helpers.
