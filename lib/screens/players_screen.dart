@@ -24,7 +24,11 @@ class _PlayersScreenState extends State<PlayersScreen> {
       SnackBar(
         content: Text('"${player.name}" adicionado(a)!'),
         duration: const Duration(seconds: 2),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Theme.of(context).primaryColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
     );
   }
@@ -38,7 +42,11 @@ class _PlayersScreenState extends State<PlayersScreen> {
         SnackBar(
           content: Text('"${removed.name}" removido(a)'),
           duration: const Duration(seconds: 2),
-          backgroundColor: Colors.redAccent,
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
     }
@@ -49,25 +57,9 @@ class _PlayersScreenState extends State<PlayersScreen> {
     final players = HiveService.playersBox.values.toList();
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        centerTitle: true,
-        title: const Text(
-          'VolleyMatch - Jogadores',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.1,
-          ),
-        ),
-        backgroundColor: Colors.blueAccent,
-        foregroundColor: Colors.white,
-        elevation: 4,
-        toolbarHeight: 80,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
-        ),
+        title: const Text('Jogadores'),
       ),
       body: Column(
         children: [
@@ -75,65 +67,72 @@ class _PlayersScreenState extends State<PlayersScreen> {
 
           // Card de input com botão abaixo
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Material(
-              elevation: 4,
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Card(
+              child: Padding(
                 padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     TextField(
                       controller: _nameController,
                       decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.person, size: 28),
+                        prefixIcon: Icon(Icons.person),
                         labelText: 'Nome do jogador',
-                        labelStyle: TextStyle(fontSize: 20),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                        ),
                       ),
-                      style: const TextStyle(fontSize: 20),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
-                        const Text('Sexo:', style: TextStyle(fontSize: 20)),
+                        const Text(
+                          'Gênero:',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                         const SizedBox(width: 12),
-                        DropdownButton<String>(
-                          value: _gender,
-                          items: const [
-                            DropdownMenuItem(
-                              value: 'M',
-                              child: Text('Masculino', style: TextStyle(fontSize: 20)),
+                        Expanded(
+                          child: DropdownButtonFormField<String>(
+                            value: _gender,
+                            decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
                             ),
-                            DropdownMenuItem(
-                              value: 'F',
-                              child: Text('Feminino', style: TextStyle(fontSize: 20)),
-                            ),
-                          ],
-                          onChanged: (v) => setState(() => _gender = v!),
+                            items: const [
+                              DropdownMenuItem(
+                                value: 'M',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.male, size: 20, color: Colors.blue),
+                                    SizedBox(width: 8),
+                                    Text('Masculino'),
+                                  ],
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: 'F',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.female, size: 20, color: Colors.pink),
+                                    SizedBox(width: 8),
+                                    Text('Feminino'),
+                                  ],
+                                ),
+                              ),
+                            ],
+                            onChanged: (v) => setState(() => _gender = v!),
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: _addPlayer,
-                      icon: const Icon(Icons.add, size: 28),
-                      label: const Text('Adicionar', style: TextStyle(fontSize: 20)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueAccent,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 18),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
+                      icon: const Icon(Icons.add),
+                      label: const Text('Adicionar Jogador'),
                     ),
                   ],
                 ),
@@ -145,78 +144,73 @@ class _PlayersScreenState extends State<PlayersScreen> {
 
           // Lista de jogadores
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ListView.builder(
-                itemCount: players.length,
-                itemBuilder: (_, i) {
-                  final p = players[i];
-                  return MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 16,
-                          horizontal: 16,
+            child: players.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.people_outline,
+                          size: 80,
+                          color: Colors.grey[400],
                         ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 6,
-                              offset: Offset(2, 4),
-                            ),
-                          ],
+                        const SizedBox(height: 16),
+                        Text(
+                          'Nenhum jogador cadastrado',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  p.gender == 'M' ? Icons.male : Icons.female,
-                                  color:
-                                      p.gender == 'M' ? Colors.blueAccent : Colors.pinkAccent,
-                                  size: 32,
-                                ),
-                                const SizedBox(width: 16),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      p.name,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    Text(
-                                      p.gender == 'M' ? 'Masculino' : 'Feminino',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey[700],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => _deletePlayer(i),
-                            ),
-                          ],
+                        const SizedBox(height: 8),
+                        Text(
+                          'Adicione jogadores para começar',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[500],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  );
-                },
-              ),
-            ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: players.length,
+                    itemBuilder: (_, i) {
+                      final p = players[i];
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: p.gender == 'M'
+                                ? Colors.blue.withOpacity(0.1)
+                                : Colors.pink.withOpacity(0.1),
+                            child: Icon(
+                              p.gender == 'M' ? Icons.male : Icons.female,
+                              color: p.gender == 'M'
+                                  ? Colors.blue[700]
+                                  : Colors.pink[700],
+                            ),
+                          ),
+                          title: Text(
+                            p.name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          subtitle: Text(
+                            p.gender == 'M' ? 'Masculino' : 'Feminino',
+                          ),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete_outline),
+                            color: Colors.red,
+                            onPressed: () => _deletePlayer(i),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
           ),
         ],
       ),

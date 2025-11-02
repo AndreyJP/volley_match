@@ -6,137 +6,200 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-      body: Column(
-        children: [
-          // Navbar maior e destacada
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 16),
-            decoration: const BoxDecoration(
-              color: Colors.blueAccent,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Header com gradiente
+            Container(
+              padding: const EdgeInsets.only(
+                top: 40,
+                bottom: 40,
+                left: 24,
+                right: 24,
+              ),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).colorScheme.secondary,
+                ],
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 8,
-                  offset: Offset(0, 4),
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text(
+            child: Column(
+              children: [
+                // Ícone do vôlei
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.sports_volleyball,
+                    size: 48,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
                   'VolleyMatch',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 32,
+                    fontSize: 36,
                     fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Gerencie seus jogos de vôlei',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.9),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(height: 40),
-
-          // Logo maior e espaçada
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.person, size: 64, color: Colors.blueAccent),
-              SizedBox(width: 24),
-              Icon(Icons.group, size: 64, color: Colors.green),
-              SizedBox(width: 24),
-              Icon(Icons.bar_chart, size: 64, color: Colors.teal),
-            ],
-          ),
-
-          const SizedBox(height: 50),
-
-          // Cards full-width com mais espaçamento
+          // Cards de navegação
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: ListView(
+              padding: const EdgeInsets.all(24),
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 1.1,
                 children: [
-                  _buildFullWidthCard(
+                  _buildMenuCard(
                     context,
                     icon: Icons.person,
                     label: 'Jogadores',
-                    color: Colors.blueAccent,
-                    onPressed: () =>
-                        Navigator.pushNamed(context, '/players'),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        const Color(0xFF2196F3),
+                        const Color(0xFF21CBF3),
+                      ],
+                    ),
+                    onPressed: () => Navigator.pushNamed(context, '/players'),
                   ),
-                  const SizedBox(height: 24),
-                  _buildFullWidthCard(
+                  _buildMenuCard(
                     context,
                     icon: Icons.group,
                     label: 'Times',
-                    color: Colors.green,
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        const Color(0xFF4CAF50),
+                        const Color(0xFF66BB6A),
+                      ],
+                    ),
                     onPressed: () => Navigator.pushNamed(context, '/teams'),
                   ),
-                  const SizedBox(height: 24),
-                  _buildFullWidthCard(
+                  _buildMenuCard(
                     context,
-                    icon: Icons.sports_volleyball,
+                    icon: Icons.sports_score,
                     label: 'Placar',
-                    color: Colors.cyan,
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        const Color(0xFFFF9800),
+                        const Color(0xFFFFB74D),
+                      ],
+                    ),
                     onPressed: () =>
                         Navigator.pushNamed(context, '/scoreboard'),
                   ),
-                  const SizedBox(height: 24),
-                  _buildFullWidthCard(
+                  _buildMenuCard(
                     context,
-                    icon: Icons.bar_chart,
+                    icon: Icons.history,
                     label: 'Partidas',
-                    color: Colors.teal,
-                    onPressed: () =>
-                        Navigator.pushNamed(context, '/matches'),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        const Color(0xFF9C27B0),
+                        const Color(0xFFBA68C8),
+                      ],
+                    ),
+                    onPressed: () => Navigator.pushNamed(context, '/matches'),
                   ),
                 ],
               ),
             ),
           ),
         ],
+        ),
       ),
     );
   }
 
-  Widget _buildFullWidthCard(BuildContext context,
-      {required IconData icon,
-      required String label,
-      required Color color,
-      required VoidCallback onPressed}) {
-    return InkWell(
-      onTap: onPressed,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 6,
-              offset: Offset(2, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 40, color: Colors.white),
-            const SizedBox(width: 20),
-            Text(
-              label,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
+  Widget _buildMenuCard(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required Gradient gradient,
+    required VoidCallback onPressed,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
               ),
-            ),
-          ],
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  icon,
+                  size: 36,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
